@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Product Analytics Dashboard — visualize sales, revenue, and product performance at a glance." />
+    <title>Product Analytics Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+
+<body>
+    <!-- Floating background orbs -->
+    <div class="bg-orb bg-orb--1"></div>
+    <div class="bg-orb bg-orb--2"></div>
+    <div class="bg-orb bg-orb--3"></div>
+
+    <div class="app">
+        <!-- Header -->
+        <header class="header" id="header">
+            <div class="header__left">
+                <div class="header__icon">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/>
+                        <path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/>
+                        <path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="header__title">Product Analytics</h1>
+                    <p class="header__subtitle">Sales Performance Dashboard</p>
+                </div>
+            </div>
+            <div class="header__right">
+                <span class="header__badge" id="reportDate">Report: {{ data.generated_at }}</span>
+                <a href="/export" class="btn btn--primary" id="exportBtn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="7 10 12 15 17 10"/>
+                        <line x1="12" y1="15" x2="12" y2="3"/>
+                    </svg>
+                    Export Report
+                </a>
+            </div>
+        </header>
+
+        <!-- Summary Cards -->
+        <section class="cards" id="summaryCards">
+            <div class="card card--revenue" id="cardRevenue">
+                <div class="card__icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                    </svg>
+                </div>
+                <p class="card__label">Total Revenue</p>
+                <p class="card__value" id="totalRevenue">₹{{ "{:,.0f}".format(data.summary.total_revenue) }}</p>
+                <span class="card__tag">All Products</span>
+            </div>
+
+            <div class="card card--quantity" id="cardQuantity">
+                <div class="card__icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 7V5a4 4 0 0 0-8 0v2"/>
+                    </svg>
+                </div>
+                <p class="card__label">Total Quantity Sold</p>
+                <p class="card__value" id="totalQuantity">{{ data.summary.total_quantity }}</p>
+                <span class="card__tag">Units</span>
+            </div>
+
+            <div class="card card--products" id="cardProducts">
+                <div class="card__icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/>
+                    </svg>
+                </div>
+                <p class="card__label">Total Products</p>
+                <p class="card__value" id="totalProducts">{{ data.summary.total_products }}</p>
+                <span class="card__tag">Categories</span>
+            </div>
+
+            <div class="card card--price" id="cardPrice">
+                <div class="card__icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+                    </svg>
+                </div>
+                <p class="card__label">Average Price</p>
+                <p class="card__value" id="avgPrice">₹{{ "{:,.0f}".format(data.summary.average_price) }}</p>
+                <span class="card__tag">Per Product</span>
+            </div>
+        </section>
+
+        <!-- Main Content Grid -->
+        <section class="grid" id="analyticsGrid">
+
+            <!-- Revenue Bar Chart -->
+            <div class="panel panel--chart" id="revenueChart">
+                <div class="panel__header">
+                    <h2 class="panel__title">Revenue by Product</h2>
+                    <span class="panel__badge">Chart</span>
+                </div>
+                <div class="chart" id="barChart">
+                    {% set max_rev = data.highest_revenue[0].revenue if data.highest_revenue else 1 %}
+                    {% for p in data.highest_revenue %}
+                    <div class="chart__row">
+                        <span class="chart__label">{{ p.product }}</span>
+                        <div class="chart__bar-wrap">
+                            <div class="chart__bar" style="--bar-width: {{ (p.revenue / max_rev * 100)|round(1) }}%;" data-value="₹{{ '{:,.0f}'.format(p.revenue) }}"></div>
+                        </div>
+                        <span class="chart__amount">₹{{ "{:,.0f}".format(p.revenue) }}</span>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Top Selling Products -->
+            <div class="panel panel--top" id="topSelling">
+                <div class="panel__header">
+                    <h2 class="panel__title">🏆 Top Selling Products</h2>
+                    <span class="panel__badge panel__badge--green">By Quantity</span>
+                </div>
+                <div class="rank-list">
+                    {% for p in data.top_selling %}
+                    <div class="rank-item" id="topItem{{ loop.index }}">
+                        <div class="rank-item__pos rank-item__pos--top">{{ loop.index }}</div>
+                        <div class="rank-item__info">
+                            <span class="rank-item__name">{{ p.product }}</span>
+                            <span class="rank-item__detail">₹{{ "{:,.0f}".format(p.price) }} per unit</span>
+                        </div>
+                        <div class="rank-item__stats">
+                            <span class="rank-item__qty">{{ p.quantity }} sold</span>
+                            <span class="rank-item__rev">₹{{ "{:,.0f}".format(p.revenue) }}</span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Least Selling Products -->
+            <div class="panel panel--least" id="leastSelling">
+                <div class="panel__header">
+                    <h2 class="panel__title">📉 Least Selling Products</h2>
+                    <span class="panel__badge panel__badge--red">Low Stock Movement</span>
+                </div>
+                <div class="rank-list">
+                    {% for p in data.least_selling %}
+                    <div class="rank-item" id="leastItem{{ loop.index }}">
+                        <div class="rank-item__pos rank-item__pos--least">{{ loop.index }}</div>
+                        <div class="rank-item__info">
+                            <span class="rank-item__name">{{ p.product }}</span>
+                            <span class="rank-item__detail">₹{{ "{:,.0f}".format(p.price) }} per unit</span>
+                        </div>
+                        <div class="rank-item__stats">
+                            <span class="rank-item__qty rank-item__qty--low">{{ p.quantity }} sold</span>
+                            <span class="rank-item__rev">₹{{ "{:,.0f}".format(p.revenue) }}</span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Full Product Table -->
+            <div class="panel panel--table" id="productTable">
+                <div class="panel__header">
+                    <h2 class="panel__title">📋 All Products Overview</h2>
+                    <span class="panel__badge">{{ data.summary.total_products }} Items</span>
+                </div>
+                <div class="table-wrap">
+                    <table class="table" id="dataTable">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Product</th>
+                                <th>Quantity</th>
+                                <th>Price (₹)</th>
+                                <th>Revenue (₹)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for p in data.products %}
+                            <tr>
+                                <td>{{ loop.index }}</td>
+                                <td><strong>{{ p.product }}</strong></td>
+                                <td>{{ p.quantity }}</td>
+                                <td>{{ "{:,.0f}".format(p.price) }}</td>
+                                <td class="table__highlight">{{ "{:,.0f}".format(p.revenue) }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer" id="footer">
+            <p>Product Analytics Dashboard &bull; Built with Python &amp; Flask &bull; {{ data.generated_at }}</p>
+        </footer>
+    </div>
+
+    <script>
+        /* Animate cards and panels on load */
+        document.addEventListener("DOMContentLoaded", () => {
+            const animateIn = (selector, delay = 80) => {
+                document.querySelectorAll(selector).forEach((el, i) => {
+                    el.style.opacity = "0";
+                    el.style.transform = "translateY(24px)";
+                    setTimeout(() => {
+                        el.style.transition = "opacity .5s cubic-bezier(.22,1,.36,1), transform .5s cubic-bezier(.22,1,.36,1)";
+                        el.style.opacity = "1";
+                        el.style.transform = "translateY(0)";
+                    }, i * delay);
+                });
+            };
+            animateIn(".card", 100);
+            animateIn(".panel", 120);
+            animateIn(".chart__row", 150);
+
+            /* Animate bar widths */
+            document.querySelectorAll(".chart__bar").forEach((bar, i) => {
+                const target = bar.style.getPropertyValue("--bar-width");
+                bar.style.width = "0%";
+                setTimeout(() => {
+                    bar.style.transition = "width .8s cubic-bezier(.22,1,.36,1)";
+                    bar.style.width = target;
+                }, 400 + i * 150);
+            });
+        });
+    </script>
+</body>
+</html>
