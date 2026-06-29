@@ -1,614 +1,394 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LancerFlow - Multi-Vendor Freelance Marketplace</title>
-    <!-- Favicon -->
-    <link rel="icon" type="image/png"
-        href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
-    <!-- Main Stylesheet -->
-    <link rel="stylesheet" href="./style.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Product Analytics Dashboard — visualize sales, revenue, and product performance at a glance." />
+    <title>Product Analytics Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="static/style.css" />
 </head>
 
 <body>
+    <!-- Floating background orbs -->
+    <div class="bg-orb bg-orb--1"></div>
+    <div class="bg-orb bg-orb--2"></div>
+    <div class="bg-orb bg-orb--3"></div>
 
-    <!-- Toast Notification Container -->
-    <div id="toast-container"></div>
-
-    <!-- App Shell Container -->
-    <div id="app-container">
-
-        <!-- LEFT SIDEBAR: Navigation -->
-        <aside class="app-sidebar">
-            <div class="logo-container">
-                <div class="logo-icon">⚡</div>
-                <span class="logo-text">LancerFlow</span>
-            </div>
-
-            <ul class="sidebar-menu">
-                <li class="sidebar-item active" id="nav-home">
-                    <a href="#" onclick="navigateTo('home')">
-                        <span>🔍</span> Explore Projects
-                    </a>
-                </li>
-                <li class="sidebar-item d-none" id="nav-chat">
-                    <a href="#" onclick="navigateTo('chat')">
-                        <span>💬</span> Chat Messages
-                    </a>
-                </li>
-                <li class="sidebar-item d-none" id="nav-client-dashboard">
-                    <a href="#" onclick="navigateTo('client-dashboard')">
-                        <span>💼</span> Client Dashboard
-                    </a>
-                </li>
-                <li class="sidebar-item d-none" id="nav-freelancer-dashboard">
-                    <a href="#" onclick="navigateTo('freelancer-dashboard')">
-                        <span>🛠️</span> Freelancer Board
-                    </a>
-                </li>
-                <li class="sidebar-item d-none" id="nav-admin-dashboard">
-                    <a href="#" onclick="navigateTo('admin-dashboard')">
-                        <span>🛡️</span> Admin Console
-                    </a>
-                </li>
-                <li class="sidebar-item" id="nav-login">
-                    <a href="#" onclick="navigateTo('login')">
-                        <span>🔑</span> Login / Sign Up
-                    </a>
-                </li>
-                <li class="sidebar-item d-none" id="nav-logout">
-                    <a href="#" onclick="handleLogout()">
-                        <span>🚪</span> Log Out
-                    </a>
-                </li>
-            </ul>
-
-            <!-- Current User Session Badge -->
-            <div class="sidebar-user-section d-none" id="sidebar-user-badge">
-                <div class="user-profile-badge">
-                    <div class="user-avatar" id="badge-avatar-letter">U</div>
-                    <div class="user-info">
-                        <div class="user-name" id="badge-user-name">User Name</div>
-                        <div class="user-role" id="badge-user-role">CLIENT</div>
-                    </div>
+    <div class="app">
+        <!-- Header -->
+        <header class="header" id="header">
+            <div class="header__left">
+                <div class="header__icon">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/>
+                        <path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/>
+                        <path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="header__title">Product Analytics</h1>
+                    <p class="header__subtitle">Sales Performance Dashboard</p>
                 </div>
             </div>
-        </aside>
-
-        <!-- CENTER VIEWPORT: Main Content -->
-        <main class="app-main">
-            <!-- Header bar -->
-            <header class="app-header">
-                <div class="header-title" id="header-title-text">Explore Projects</div>
-
-                <!-- Wallet Status Indicator -->
-                <div class="wallet-badge d-none" id="header-wallet">
-                    Wallet: <strong id="wallet-balance">$0.00</strong>
-                    <button class="wallet-btn-add" onclick="openModal('modal-add-funds')"
-                        title="Add Mock Funds">+</button>
-                </div>
-            </header>
-
-            <!-- Dynamic View Containers -->
-            <div class="content-body">
-
-                <!-- VIEW 1: HOME (Explore / Project Directory) -->
-                <div id="view-home" class="app-view">
-                    <div class="hero-section">
-                        <h1 class="hero-title">Hire Top Talents. Bid on Open Gigs.</h1>
-                        <p class="hero-desc">LancerFlow connects enterprise clients with premium freelancers globally.
-                            Powered by a fully transparent automated escrow payment gateway.</p>
-
-                        <div class="dashboard-stats">
-                            <div class="stat-card">
-                                <div class="stat-val" id="stats-total-jobs">0</div>
-                                <div class="stat-label">Total Jobs</div>
-                            </div>
-                            <div class="stat-card">
-                                <div class="stat-val" id="stats-total-volume">$0</div>
-                                <div class="stat-label">Volume Locked</div>
-                            </div>
-                            <div class="stat-card">
-                                <div class="stat-val" id="stats-active-users">0</div>
-                                <div class="stat-label">Platform Members</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="mb-4 d-flex justify-between align-center">
-                        <h2>Active Job Listings</h2>
-                        <button class="btn btn-primary d-none" id="btn-post-job-shortcut"
-                            onclick="openModal('modal-post-project')">
-                            Post a Project
-                        </button>
-                    </div>
-
-                    <div class="listings-grid" id="jobs-listings-container">
-                        <!-- Dynamic Job cards go here -->
-                        <div class="text-center mt-4" style="grid-column: 1 / -1;">Loading projects...</div>
-                    </div>
-                </div>
-
-                <!-- VIEW 2: PROJECT DETAILS -->
-                <div id="view-project-details" class="app-view d-none">
-                    <button class="btn btn-secondary mb-4" onclick="navigateTo('home')">← Back to Listings</button>
-
-                    <div class="project-details-grid">
-                        <div class="glass-card">
-                            <div class="project-card-header">
-                                <h2 id="pd-title" style="font-size: 26px;">Project Title</h2>
-                                <span class="badge" id="pd-status-badge">status</span>
-                            </div>
-                            <p class="form-label">Description</p>
-                            <p id="pd-description" class="mb-4" style="white-space: pre-wrap; font-size: 16px;">
-                                Description text...</p>
-
-                            <div class="d-flex gap-4 mb-4">
-                                <div>
-                                    <span class="form-label">Category</span>
-                                    <strong id="pd-category">Web Development</strong>
-                                </div>
-                                <div>
-                                    <span class="form-label">Deadline</span>
-                                    <strong id="pd-deadline">2026-07-15</strong>
-                                </div>
-                                <div>
-                                    <span class="form-label">Client</span>
-                                    <strong id="pd-client">Client Name</strong>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="glass-card">
-                            <h3>Budget Escrow</h3>
-                            <div class="project-card-budget" id="pd-budget"
-                                style="font-size: 32px; margin: 12px 0 20px 0;">$0.00</div>
-
-                            <!-- Bid Placement Action Container -->
-                            <div id="pd-freelancer-bid-section" class="d-none">
-                                <button class="btn btn-accent btn-block" onclick="openBidModal()">Place a Bid</button>
-                            </div>
-                            <div id="pd-guest-bid-section" class="text-center text-muted">
-                                <p style="font-size: 13px;">Login as a Freelancer to place a bid on this project.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Bids List Section -->
-                    <div class="glass-card mt-4" id="pd-bids-section">
-                        <h3>Submitted Proposals (<span id="pd-bids-count">0</span>)</h3>
-                        <div class="table-container mt-4">
-                            <table class="data-table">
-                                <thead>
-                                    <tr>
-                                        <th>Freelancer</th>
-                                        <th>Bid Amount</th>
-                                        <th>Delivery Estimate</th>
-                                        <th>Proposal Pitch</th>
-                                        <th>Status</th>
-                                        <th id="th-bid-actions">Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="pd-bids-table-body">
-                                    <!-- Dynamic Bids go here -->
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- VIEW 3: LOGIN / SIGNUP -->
-                <div id="view-login" class="app-view d-none">
-                    <div class="auth-wrapper glass-card">
-                        <h2 class="auth-title">Welcome Back</h2>
-                        <p class="auth-subtitle">Login to manage your projects or place bids.</p>
-
-                        <form id="login-form" onsubmit="handleLoginSubmit(event)">
-                            <div class="form-group">
-                                <label class="form-label">Email Address</label>
-                                <input type="email" id="login-email" class="form-control" placeholder="name@example.com"
-                                    required>
-                            </div>
-                            <div class="form-group">
-                                <div class="d-flex justify-between">
-                                    <label class="form-label">Password</label>
-                                    <a href="#" style="font-size: 12px;" onclick="navigateTo('forgot-password')">Forgot
-                                        Password?</a>
-                                </div>
-                                <input type="password" id="login-password" class="form-control" placeholder="••••••••"
-                                    required>
-                            </div>
-                            <button type="submit" class="btn btn-primary btn-block">Log In</button>
-                        </form>
-                        <div class="text-center mt-4">
-                            <p class="text-muted" style="font-size: 14px;">Don't have an account? <a href="#"
-                                    onclick="navigateTo('register')">Register Now</a></p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- VIEW 4: REGISTER -->
-                <div id="view-register" class="app-view d-none">
-                    <div class="auth-wrapper glass-card">
-                        <h2 class="auth-title">Create Account</h2>
-                        <p class="auth-subtitle">Join LancerFlow as a Client or Freelancer.</p>
-
-                        <form id="register-form" onsubmit="handleRegisterSubmit(event)">
-                            <div class="form-group">
-                                <label class="form-label">Full Name</label>
-                                <input type="text" id="reg-name" class="form-control" placeholder="Alice Smith"
-                                    required>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Email Address</label>
-                                <input type="email" id="reg-email" class="form-control" placeholder="alice@example.com"
-                                    required>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Password</label>
-                                <input type="password" id="reg-password" class="form-control" placeholder="••••••••"
-                                    required>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">I want to register as a:</label>
-                                <select id="reg-role" class="form-control">
-                                    <option value="client">Client (Hire Freelancers)</option>
-                                    <option value="freelancer">Freelancer (Work on Projects)</option>
-                                </select>
-                            </div>
-                            <button type="submit" class="btn btn-primary btn-block">Sign Up</button>
-                        </form>
-                        <div class="text-center mt-4">
-                            <p class="text-muted" style="font-size: 14px;">Already registered? <a href="#"
-                                    onclick="navigateTo('login')">Log In</a></p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- VIEW 5: EMAIL VERIFY VIEW -->
-                <div id="view-verify" class="app-view d-none">
-                    <div class="auth-wrapper glass-card">
-                        <h2 class="auth-title">Verify Email</h2>
-                        <p class="auth-subtitle">Enter the 6-digit code sent to <strong id="verify-email-text">your
-                                email</strong>.</p>
-
-                        <form id="verify-form" onsubmit="handleVerifySubmit(event)">
-                            <div class="form-group">
-                                <label class="form-label">Verification Code</label>
-                                <input type="text" id="verify-code" class="form-control" placeholder="123456"
-                                    style="text-align: center; letter-spacing: 0.5em; font-size: 24px; font-weight: 700;"
-                                    required maxlength="6">
-                            </div>
-                            <button type="submit" class="btn btn-primary btn-block">Verify Account</button>
-                        </form>
-                    </div>
-                </div>
-
-                <!-- VIEW 6: FORGOT PASSWORD -->
-                <div id="view-forgot-password" class="app-view d-none">
-                    <div class="auth-wrapper glass-card">
-                        <h2 class="auth-title">Forgot Password</h2>
-                        <p class="auth-subtitle">Enter your email and we'll send a password recovery code.</p>
-
-                        <form id="forgot-form" onsubmit="handleForgotSubmit(event)">
-                            <div class="form-group">
-                                <label class="form-label">Email Address</label>
-                                <input type="email" id="forgot-email" class="form-control"
-                                    placeholder="name@example.com" required>
-                            </div>
-                            <button type="submit" class="btn btn-primary btn-block">Send Reset Code</button>
-                        </form>
-                        <div class="text-center mt-4">
-                            <a href="#" onclick="navigateTo('login')">Back to Login</a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- VIEW 7: RESET PASSWORD CONFIRM -->
-                <div id="view-reset-password" class="app-view d-none">
-                    <div class="auth-wrapper glass-card">
-                        <h2 class="auth-title">Reset Password</h2>
-                        <p class="auth-subtitle">Provide your reset code and choose a new password.</p>
-
-                        <form id="reset-confirm-form" onsubmit="handleResetConfirmSubmit(event)">
-                            <input type="hidden" id="reset-email-hidden">
-                            <div class="form-group">
-                                <label class="form-label">Reset Token/Code</label>
-                                <input type="text" id="reset-token" class="form-control" placeholder="123456"
-                                    style="text-align: center; font-size: 18px; font-weight: 700;" required>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">New Password</label>
-                                <input type="password" id="reset-new-password" class="form-control"
-                                    placeholder="••••••••" required>
-                            </div>
-                            <button type="submit" class="btn btn-primary btn-block">Update Password</button>
-                        </form>
-                    </div>
-                </div>
-
-                <!-- VIEW 8: CLIENT DASHBOARD -->
-                <div id="view-client-dashboard" class="app-view d-none">
-                    <div class="d-flex justify-between align-center mb-4">
-                        <h2>Client Job Board</h2>
-                        <button class="btn btn-primary" onclick="openModal('modal-post-project')">
-                            Post New Job
-                        </button>
-                    </div>
-
-                    <div class="glass-card">
-                        <h3>My Jobs & Project Escrows</h3>
-                        <div class="table-container mt-4">
-                            <table class="data-table">
-                                <thead>
-                                    <tr>
-                                        <th>Job ID</th>
-                                        <th>Title</th>
-                                        <th>Budget</th>
-                                        <th>Freelancer</th>
-                                        <th>Status</th>
-                                        <th>Actions & Escrow Management</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="client-jobs-table-body">
-                                    <!-- Dynamic rows -->
-                                    <tr>
-                                        <td colspan="6" class="text-center">No jobs posted yet.</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- VIEW 9: FREELANCER DASHBOARD -->
-                <div id="view-freelancer-dashboard" class="app-view d-none">
-                    <h2>Freelancer Workspace</h2>
-
-                    <div class="glass-card mt-4">
-                        <h3>My Engaged Projects</h3>
-                        <div class="table-container mt-4">
-                            <table class="data-table">
-                                <thead>
-                                    <tr>
-                                        <th>Job ID</th>
-                                        <th>Project Name</th>
-                                        <th>Agreed Amount</th>
-                                        <th>Client Name</th>
-                                        <th>Status</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="freelancer-jobs-table-body">
-                                    <!-- Dynamic rows -->
-                                    <tr>
-                                        <td colspan="6" class="text-center">No active contracts yet.</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- VIEW 10: REAL-TIME CHAT -->
-                <div id="view-chat" class="app-view d-none">
-                    <div class="chat-container">
-                        <!-- Chat Sidebar (Active Contacts) -->
-                        <div class="chat-sidebar">
-                            <div class="chat-sidebar-header">
-                                <h3>Messages</h3>
-                            </div>
-                            <ul class="chat-contacts-list" id="chat-contacts-container">
-                                <!-- Contacts populated dynamically -->
-                            </ul>
-                        </div>
-                        <!-- Chat Viewport (Active convo) -->
-                        <div class="chat-viewport">
-                            <div class="chat-viewport-header d-none" id="chat-active-header">
-                                <div class="contact-avatar" id="active-chat-avatar">C</div>
-                                <div>
-                                    <h4 id="active-chat-username">Select a contact</h4>
-                                    <span class="contact-role" id="active-chat-userrole">role</span>
-                                </div>
-                            </div>
-
-                            <!-- Messages Area -->
-                            <div class="chat-messages-area" id="chat-messages-log">
-                                <div class="text-center text-muted" style="margin-top: 100px;">
-                                    Select a user from the contact sidebar or click "Message" on a project bid to start
-                                    chatting.
-                                </div>
-                            </div>
-
-                            <!-- Input form -->
-                            <div class="chat-input-bar d-none" id="chat-input-container">
-                                <form class="chat-input-form" onsubmit="handleSendChatMessage(event)">
-                                    <input type="text" id="chat-message-input" class="form-control"
-                                        placeholder="Type a message..." autocomplete="off">
-                                    <button type="submit" class="btn btn-primary">Send</button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- VIEW 11: ADMIN PANEL -->
-                <div id="view-admin-dashboard" class="app-view d-none">
-                    <h2>Platform Admin Console</h2>
-                    <p class="text-muted mb-4">Moderate user accounts, check escrows, and view full platform audit
-                        trails.</p>
-
-                    <div class="dashboard-stats">
-                        <div class="stat-card">
-                            <div class="stat-val" id="admin-stat-users">0</div>
-                            <div class="stat-label">Total Users</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-val" id="admin-stat-projects">0</div>
-                            <div class="stat-label">Total Projects</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-val" id="admin-stat-escrow">$0.00</div>
-                            <div class="stat-label">Platform Escrow Holdings</div>
-                        </div>
-                    </div>
-
-                    <div class="glass-card">
-                        <h3>Registered User Management</h3>
-                        <div class="table-container mt-4">
-                            <table class="data-table">
-                                <thead>
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>Name</th>
-                                        <th>Email</th>
-                                        <th>Role</th>
-                                        <th>Verified</th>
-                                        <th>Wallet Balance</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="admin-users-table-body">
-                                    <!-- Dynamic users -->
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-
+            <div class="header__right">
+                <span class="header__badge" id="reportDate">Report: 2026-06-29 22:46:02</span>
+                <a href="/export" class="btn btn--primary" id="exportBtn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="7 10 12 15 17 10"/>
+                        <line x1="12" y1="15" x2="12" y2="3"/>
+                    </svg>
+                    Export Report
+                </a>
             </div>
-        </main>
+        </header>
 
-        <!-- RIGHT SIDEBAR: Developer Debug & Email Simulation Panel -->
-        <aside class="simulation-panel">
-            <div class="sim-header">
-                <span class="sim-title">⚙️ Simulation Center</span>
+        <!-- Summary Cards -->
+        <section class="cards" id="summaryCards">
+            <div class="card card--revenue" id="cardRevenue">
+                <div class="card__icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                    </svg>
+                </div>
+                <p class="card__label">Total Revenue</p>
+                <p class="card__value" id="totalRevenue">₹305,500</p>
+                <span class="card__tag">All Products</span>
             </div>
 
-            <!-- Profile Quick Swapper -->
-            <div class="sim-section">
-                <h4 class="sim-section-title">Quick Role Switcher</h4>
-                <div class="quick-users-list">
-                    <button class="quick-user-btn" onclick="quickLoginAs(2)">
-                        <span>Alice Client</span>
-                        <span class="quick-user-role role-client">Client</span>
-                    </button>
-                    <button class="quick-user-btn" onclick="quickLoginAs(3)">
-                        <span>Bob Freelancer</span>
-                        <span class="quick-user-role role-freelancer">Freelancer</span>
-                    </button>
-                    <button class="quick-user-btn" onclick="quickLoginAs(1)">
-                        <span>System Admin</span>
-                        <span class="quick-user-role role-admin">Admin</span>
-                    </button>
+            <div class="card card--quantity" id="cardQuantity">
+                <div class="card__icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 7V5a4 4 0 0 0-8 0v2"/>
+                    </svg>
                 </div>
-                <p class="text-muted mt-4" style="font-size: 11px;">Instantly changes session to this user profile to
-                    test panels & flows without log-ins.</p>
+                <p class="card__label">Total Quantity Sold</p>
+                <p class="card__value" id="totalQuantity">27</p>
+                <span class="card__tag">Units</span>
             </div>
 
-            <!-- Simulated Outbox/Inbox logs -->
-            <div class="sim-section" style="flex: 1; display: flex; flex-direction: column; min-height: 0;">
-                <h4 class="sim-section-title">📧 Simulated Outbox Logs</h4>
-                <div class="email-inbox-simulation" id="sim-email-log-container">
-                    <p class="text-muted text-center" style="font-size: 12px; margin-top: 20px;">No outgoing logs yet.
-                    </p>
+            <div class="card card--products" id="cardProducts">
+                <div class="card__icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/>
+                    </svg>
+                </div>
+                <p class="card__label">Total Products</p>
+                <p class="card__value" id="totalProducts">5</p>
+                <span class="card__tag">Categories</span>
+            </div>
+
+            <div class="card card--price" id="cardPrice">
+                <div class="card__icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+                    </svg>
+                </div>
+                <p class="card__label">Average Price</p>
+                <p class="card__value" id="avgPrice">₹20,400</p>
+                <span class="card__tag">Per Product</span>
+            </div>
+        </section>
+
+        <!-- Main Content Grid -->
+        <section class="grid" id="analyticsGrid">
+
+            <!-- Revenue Bar Chart -->
+            <div class="panel panel--chart" id="revenueChart">
+                <div class="panel__header">
+                    <h2 class="panel__title">Revenue by Product</h2>
+                    <span class="panel__badge">Chart</span>
+                </div>
+                <div class="chart" id="barChart">
+                    
+                    
+                    <div class="chart__row">
+                        <span class="chart__label">Laptop</span>
+                        <div class="chart__bar-wrap">
+                            <div class="chart__bar" style="--bar-width: 100.0%;" data-value="₹100,000"></div>
+                        </div>
+                        <span class="chart__amount">₹100,000</span>
+                    </div>
+                    
+                    <div class="chart__row">
+                        <span class="chart__label">Mobile</span>
+                        <div class="chart__bar-wrap">
+                            <div class="chart__bar" style="--bar-width: 100.0%;" data-value="₹100,000"></div>
+                        </div>
+                        <span class="chart__amount">₹100,000</span>
+                    </div>
+                    
+                    <div class="chart__row">
+                        <span class="chart__label">Tablet</span>
+                        <div class="chart__bar-wrap">
+                            <div class="chart__bar" style="--bar-width: 90.0%;" data-value="₹90,000"></div>
+                        </div>
+                        <span class="chart__amount">₹90,000</span>
+                    </div>
+                    
+                    <div class="chart__row">
+                        <span class="chart__label">Keyboard</span>
+                        <div class="chart__bar-wrap">
+                            <div class="chart__bar" style="--bar-width: 10.5%;" data-value="₹10,500"></div>
+                        </div>
+                        <span class="chart__amount">₹10,500</span>
+                    </div>
+                    
+                    <div class="chart__row">
+                        <span class="chart__label">Mouse</span>
+                        <div class="chart__bar-wrap">
+                            <div class="chart__bar" style="--bar-width: 5.0%;" data-value="₹5,000"></div>
+                        </div>
+                        <span class="chart__amount">₹5,000</span>
+                    </div>
+                    
                 </div>
             </div>
-        </aside>
 
+            <!-- Top Selling Products -->
+            <div class="panel panel--top" id="topSelling">
+                <div class="panel__header">
+                    <h2 class="panel__title">🏆 Top Selling Products</h2>
+                    <span class="panel__badge panel__badge--green">By Quantity</span>
+                </div>
+                <div class="rank-list">
+                    
+                    <div class="rank-item" id="topItem1">
+                        <div class="rank-item__pos rank-item__pos--top">1</div>
+                        <div class="rank-item__info">
+                            <span class="rank-item__name">Mouse</span>
+                            <span class="rank-item__detail">₹500 per unit</span>
+                        </div>
+                        <div class="rank-item__stats">
+                            <span class="rank-item__qty">10 sold</span>
+                            <span class="rank-item__rev">₹5,000</span>
+                        </div>
+                    </div>
+                    
+                    <div class="rank-item" id="topItem2">
+                        <div class="rank-item__pos rank-item__pos--top">2</div>
+                        <div class="rank-item__info">
+                            <span class="rank-item__name">Keyboard</span>
+                            <span class="rank-item__detail">₹1,500 per unit</span>
+                        </div>
+                        <div class="rank-item__stats">
+                            <span class="rank-item__qty">7 sold</span>
+                            <span class="rank-item__rev">₹10,500</span>
+                        </div>
+                    </div>
+                    
+                    <div class="rank-item" id="topItem3">
+                        <div class="rank-item__pos rank-item__pos--top">3</div>
+                        <div class="rank-item__info">
+                            <span class="rank-item__name">Mobile</span>
+                            <span class="rank-item__detail">₹20,000 per unit</span>
+                        </div>
+                        <div class="rank-item__stats">
+                            <span class="rank-item__qty">5 sold</span>
+                            <span class="rank-item__rev">₹100,000</span>
+                        </div>
+                    </div>
+                    
+                    <div class="rank-item" id="topItem4">
+                        <div class="rank-item__pos rank-item__pos--top">4</div>
+                        <div class="rank-item__info">
+                            <span class="rank-item__name">Tablet</span>
+                            <span class="rank-item__detail">₹30,000 per unit</span>
+                        </div>
+                        <div class="rank-item__stats">
+                            <span class="rank-item__qty">3 sold</span>
+                            <span class="rank-item__rev">₹90,000</span>
+                        </div>
+                    </div>
+                    
+                    <div class="rank-item" id="topItem5">
+                        <div class="rank-item__pos rank-item__pos--top">5</div>
+                        <div class="rank-item__info">
+                            <span class="rank-item__name">Laptop</span>
+                            <span class="rank-item__detail">₹50,000 per unit</span>
+                        </div>
+                        <div class="rank-item__stats">
+                            <span class="rank-item__qty">2 sold</span>
+                            <span class="rank-item__rev">₹100,000</span>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+
+            <!-- Least Selling Products -->
+            <div class="panel panel--least" id="leastSelling">
+                <div class="panel__header">
+                    <h2 class="panel__title">📉 Least Selling Products</h2>
+                    <span class="panel__badge panel__badge--red">Low Stock Movement</span>
+                </div>
+                <div class="rank-list">
+                    
+                    <div class="rank-item" id="leastItem1">
+                        <div class="rank-item__pos rank-item__pos--least">1</div>
+                        <div class="rank-item__info">
+                            <span class="rank-item__name">Laptop</span>
+                            <span class="rank-item__detail">₹50,000 per unit</span>
+                        </div>
+                        <div class="rank-item__stats">
+                            <span class="rank-item__qty rank-item__qty--low">2 sold</span>
+                            <span class="rank-item__rev">₹100,000</span>
+                        </div>
+                    </div>
+                    
+                    <div class="rank-item" id="leastItem2">
+                        <div class="rank-item__pos rank-item__pos--least">2</div>
+                        <div class="rank-item__info">
+                            <span class="rank-item__name">Tablet</span>
+                            <span class="rank-item__detail">₹30,000 per unit</span>
+                        </div>
+                        <div class="rank-item__stats">
+                            <span class="rank-item__qty rank-item__qty--low">3 sold</span>
+                            <span class="rank-item__rev">₹90,000</span>
+                        </div>
+                    </div>
+                    
+                    <div class="rank-item" id="leastItem3">
+                        <div class="rank-item__pos rank-item__pos--least">3</div>
+                        <div class="rank-item__info">
+                            <span class="rank-item__name">Mobile</span>
+                            <span class="rank-item__detail">₹20,000 per unit</span>
+                        </div>
+                        <div class="rank-item__stats">
+                            <span class="rank-item__qty rank-item__qty--low">5 sold</span>
+                            <span class="rank-item__rev">₹100,000</span>
+                        </div>
+                    </div>
+                    
+                    <div class="rank-item" id="leastItem4">
+                        <div class="rank-item__pos rank-item__pos--least">4</div>
+                        <div class="rank-item__info">
+                            <span class="rank-item__name">Keyboard</span>
+                            <span class="rank-item__detail">₹1,500 per unit</span>
+                        </div>
+                        <div class="rank-item__stats">
+                            <span class="rank-item__qty rank-item__qty--low">7 sold</span>
+                            <span class="rank-item__rev">₹10,500</span>
+                        </div>
+                    </div>
+                    
+                    <div class="rank-item" id="leastItem5">
+                        <div class="rank-item__pos rank-item__pos--least">5</div>
+                        <div class="rank-item__info">
+                            <span class="rank-item__name">Mouse</span>
+                            <span class="rank-item__detail">₹500 per unit</span>
+                        </div>
+                        <div class="rank-item__stats">
+                            <span class="rank-item__qty rank-item__qty--low">10 sold</span>
+                            <span class="rank-item__rev">₹5,000</span>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+
+            <!-- Full Product Table -->
+            <div class="panel panel--table" id="productTable">
+                <div class="panel__header">
+                    <h2 class="panel__title">📋 All Products Overview</h2>
+                    <span class="panel__badge">5 Items</span>
+                </div>
+                <div class="table-wrap">
+                    <table class="table" id="dataTable">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Product</th>
+                                <th>Quantity</th>
+                                <th>Price (₹)</th>
+                                <th>Revenue (₹)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            
+                            <tr>
+                                <td>1</td>
+                                <td><strong>Laptop</strong></td>
+                                <td>2</td>
+                                <td>50,000</td>
+                                <td class="table__highlight">100,000</td>
+                            </tr>
+                            
+                            <tr>
+                                <td>2</td>
+                                <td><strong>Mobile</strong></td>
+                                <td>5</td>
+                                <td>20,000</td>
+                                <td class="table__highlight">100,000</td>
+                            </tr>
+                            
+                            <tr>
+                                <td>3</td>
+                                <td><strong>Mouse</strong></td>
+                                <td>10</td>
+                                <td>500</td>
+                                <td class="table__highlight">5,000</td>
+                            </tr>
+                            
+                            <tr>
+                                <td>4</td>
+                                <td><strong>Keyboard</strong></td>
+                                <td>7</td>
+                                <td>1,500</td>
+                                <td class="table__highlight">10,500</td>
+                            </tr>
+                            
+                            <tr>
+                                <td>5</td>
+                                <td><strong>Tablet</strong></td>
+                                <td>3</td>
+                                <td>30,000</td>
+                                <td class="table__highlight">90,000</td>
+                            </tr>
+                            
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer" id="footer">
+            <p>Product Analytics Dashboard &bull; Built with Python &amp; Flask &bull; 2026-06-29 22:46:02</p>
+        </footer>
     </div>
 
-    <!-- MODAL 1: POST A PROJECT (Client) -->
-    <div class="modal-overlay" id="modal-post-project">
-        <div class="modal-content">
-            <button class="modal-close-btn" onclick="closeModal('modal-post-project')">×</button>
-            <h3>Post a New Project</h3>
-            <p class="text-muted mb-4">Explain your project requirements. Safe payment via escrow is required.</p>
+    <script>
+        /* Animate cards and panels on load */
+        document.addEventListener("DOMContentLoaded", () => {
+            const animateIn = (selector, delay = 80) => {
+                document.querySelectorAll(selector).forEach((el, i) => {
+                    el.style.opacity = "0";
+                    el.style.transform = "translateY(24px)";
+                    setTimeout(() => {
+                        el.style.transition = "opacity .5s cubic-bezier(.22,1,.36,1), transform .5s cubic-bezier(.22,1,.36,1)";
+                        el.style.opacity = "1";
+                        el.style.transform = "translateY(0)";
+                    }, i * delay);
+                });
+            };
+            animateIn(".card", 100);
+            animateIn(".panel", 120);
+            animateIn(".chart__row", 150);
 
-            <form onsubmit="handlePostProjectSubmit(event)">
-                <div class="form-group">
-                    <label class="form-label">Project Title</label>
-                    <input type="text" id="post-title" class="form-control"
-                        placeholder="E.g., Web Application Development" required>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Category</label>
-                    <select id="post-category" class="form-control">
-                        <option value="Web Development">Web Development</option>
-                        <option value="Design & Creative">Design & Creative</option>
-                        <option value="Data Science & Python">Data Science & Python</option>
-                        <option value="Writing & Translation">Writing & Translation</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Escrow Budget ($ USD)</label>
-                    <input type="number" id="post-budget" class="form-control" placeholder="E.g., 500" required min="1">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Target Deadline</label>
-                    <input type="date" id="post-deadline" class="form-control" required>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Project Description / Requirements</label>
-                    <textarea id="post-description" class="form-control"
-                        placeholder="Write full details about files, endpoints, design expectations..." rows="5"
-                        required></textarea>
-                </div>
-                <button type="submit" class="btn btn-primary btn-block">Publish & Lock Escrow Budget</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- MODAL 2: PLACE A BID (Freelancer) -->
-    <div class="modal-overlay" id="modal-place-bid">
-        <div class="modal-content">
-            <button class="modal-close-btn" onclick="closeModal('modal-place-bid')">×</button>
-            <h3>Submit a Project Proposal</h3>
-            <p class="text-muted mb-4">Set your delivery terms. Escrow funds will release upon project approval.</p>
-
-            <form onsubmit="handlePlaceBidSubmit(event)">
-                <input type="hidden" id="bid-project-id">
-                <div class="form-group">
-                    <label class="form-label">Bid Amount ($ USD)</label>
-                    <input type="number" id="bid-amount" class="form-control" placeholder="E.g., 450" required min="1">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Delivery Estimate (Days)</label>
-                    <input type="number" id="bid-days" class="form-control" placeholder="E.g., 7" required min="1">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Proposal Cover Pitch</label>
-                    <textarea id="bid-proposal" class="form-control"
-                        placeholder="Describe your experience, technical plan, and links to references..." rows="5"
-                        required></textarea>
-                </div>
-                <button type="submit" class="btn btn-accent btn-block">Submit Proposal</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- MODAL 3: ADD MOCK FUNDS (Wallet Reload) -->
-    <div class="modal-overlay" id="modal-add-funds">
-        <div class="modal-content">
-            <button class="modal-close-btn" onclick="closeModal('modal-add-funds')">×</button>
-            <h3>Add Demo Mock Funds</h3>
-            <p class="text-muted mb-4">Load your dummy wallet to pay freelancers or test platform flows.</p>
-
-            <form onsubmit="handleAddFundsSubmit(event)">
-                <div class="form-group">
-                    <label class="form-label">Recharge Amount ($ USD)</label>
-                    <input type="number" id="funds-amount" class="form-control" value="1000" required min="1"
-                        max="10000">
-                </div>
-                <button type="submit" class="btn btn-primary btn-block">Load Wallet</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- Core App JS Scripts -->
-    <script src="./app.js"></script>
+            /* Animate bar widths */
+            document.querySelectorAll(".chart__bar").forEach((bar, i) => {
+                const target = bar.style.getPropertyValue("--bar-width");
+                bar.style.width = "0%";
+                setTimeout(() => {
+                    bar.style.transition = "width .8s cubic-bezier(.22,1,.36,1)";
+                    bar.style.width = target;
+                }, 400 + i * 150);
+            });
+        });
+    </script>
 </body>
-
 </html>
